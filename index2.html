@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Brief Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS (Optional for additional styling) -->
+    <style>
+        .container {
+            margin-top: 50px;
+            max-width: 800px;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .video-background video {
+            min-height: 100%;
+            min-width: 100%;
+        }
+        body {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .form-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="video-background">
+        <video autoplay muted loop>
+            <source src="./12279338_2160_3840_60fps.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="container">
+        <h1 class="text-center text-light mb-4">Client Brief Form</h1>
+
+        <form action="#" method="post">
+            <!-- General Information Section -->
+            <div class="form-section">
+                <h4 class="text-primary">General Information</h4>
+                <div class="form-group">
+                    <label for="company-name">Company Name:</label>
+                    <input type="text" class="form-control" id="company-name" name="company-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact-person">Contact Person:</label>
+                    <input type="text" class="form-control" id="contact-person" name="contact-person" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="position">Position:</label>
+                    <input type="text" class="form-control" id="position" name="position">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" class="form-control" id="phone" name="phone">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" class="form-control" id="email" name="email">
+                </div>
+            </div>
+
+            <!-- Project Description Section -->
+            <div class="form-section">
+                <h4 class="text-primary">Description of the Project</h4>
+                <div class="form-group">
+                    <label for="project-name">Project Name:</label>
+                    <input type="text" class="form-control" id="project-name" name="project-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-type">Project Type:</label>
+                    <input type="text" class="form-control" id="project-type" name="project-type">
+                </div>
+
+                <div class="form-group">
+                    <label for="project-goals">Purpose of the Project:</label>
+                    <textarea class="form-control" id="project-goals" name="project-goals" rows="4" required></textarea>
+                </div>
+            </div>
+
+            <!-- Target Audience Section -->
+            <div class="form-section">
+                <h4 class="text-primary">Target Audience</h4>
+                <div class="form-group">
+                    <label for="audience-characteristics">Main Characteristics:</label>
+                    <textarea class="form-control" id="audience-characteristics" name="audience-characteristics" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="audience-needs">Audience Needs/Problems:</label>
+                    <textarea class="form-control" id="audience-needs" name="audience-needs" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Competition Section -->
+            <div class="form-section">
+                <h4 class="text-primary">Competition</h4>
+                <div class="form-group">
+                    <label for="competitors">Main Competitors:</label>
+                    <textarea class="form-control" id="competitors" name="competitors" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="differentiators">Differentiators:</label>
+                    <textarea class="form-control" id="differentiators" name="differentiators" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="advantages">Competitive Advantages:</label>
+                    <textarea class="form-control" id="advantages" name="advantages" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Budget Section -->
+            <div class="form-section">
+                <h4 class="text-primary">Budget</h4>
+                <div class="form-group">
+                    <label for="budget">Estimated Budget:</label>
+                    <input type="text" class="form-control" id="budget" name="budget">
+                </div>
+
+                <div class="form-group">
+                    <label for="budget-constraints">Spending Limits:</label>
+                    <textarea class="form-control" id="budget-constraints" name="budget-constraints" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Timeline Section -->
+            <div class="form-section">
+                <h4 class="text-primary">Timeline</h4>
+                <div class="form-group">
+                    <label for="project-timeline">Estimated Completion Date:</label>
+                    <input type="text" class="form-control" id="project-timeline" name="project-timeline">
+                </div>
+
+                <div class="form-group">
+                    <label for="milestones">Key Milestones:</label>
+                    <textarea class="form-control" id="milestones" name="milestones" rows="4"></textarea>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group text-center">
+                <button type="submit" class="btn btn-primary btn-lg">Submit Form</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
