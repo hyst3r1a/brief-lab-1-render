@@ -4,13 +4,19 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
 const PORT = 3000;
+const { Database } = require('@sqlitecloud/drivers');
+
+// Use environment variable for admin password
+const ADMIN_PASS = process.env.ADMIN_PASS || 'defaultpassword';
+const DB_CONN = process.env.DB_CONN;
 
 // Database setup
-const db = new sqlite3.Database('./brief_data.db', (err) => {
+const db = new Database('sqlitecloud://csfl31qznz.sqlite.cloud:8860?apikey=5ktCyiEAPZB59W7eyUNuliItUEP3hOmLpl2IpejdhXM', err => {
     if (err) {
         console.error('Error opening database', err.message);
     } else {
-        db.run(`CREATE TABLE IF NOT EXISTS briefs (
+        db.run(`USE DATABASE chinook.sqlite;
+            CREATE TABLE IF NOT EXISTS briefs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             company_name TEXT,
             contact_person TEXT,
@@ -19,7 +25,16 @@ const db = new sqlite3.Database('./brief_data.db', (err) => {
             email TEXT,
             project_name TEXT,
             project_type TEXT,
-            project_goals TEXT
+            project_goals TEXT,
+            audience_characteristics TEXT,
+            audience_needs TEXT,
+            competitors TEXT,
+            differentiators TEXT,
+            advantages TEXT,
+            budget TEXT,
+            budget_constraints TEXT,
+            project_timeline TEXT,
+            milestones TEXT
         )`);
     }
 });
@@ -43,85 +58,125 @@ app.post('/submit', (req, res) => {
         email,
         'project-name': projectName,
         'project-type': projectType,
-        'project-goals': projectGoals
+        'project-goals': projectGoals,
+        'audience-characteristics': audienceCharacteristics,
+        'audience-needs': audienceNeeds,
+        competitors,
+        differentiators,
+        advantages,
+        budget,
+        'budget-constraints': budgetConstraints,
+        'project-timeline': projectTimeline,
+        milestones
     } = req.body;
 
     // Insert form data into the database
     db.run(
-        `INSERT INTO briefs (
-            company_name, contact_person, position, phone, email, project_name, project_type, project_goals
-        ) VALUES (?,?,?,?,?,?,?,?)`,
-        [companyName, contactPerson, position, phone, email, projectName, projectType, projectGoals],
+        `USE DATABASE chinook.sqlite;
+        INSERT INTO briefs (
+            company_name, contact_person, position, phone, email, project_name, project_type, project_goals,
+            audience_characteristics, audience_needs, competitors, differentiators, advantages, 
+            budget, budget_constraints, project_timeline, milestones
+        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+        [companyName, contactPerson, position, phone, email, projectName, projectType, projectGoals, audienceCharacteristics,
+         audienceNeeds, competitors, differentiators, advantages, budget, budgetConstraints, projectTimeline, milestones],
         (err) => {
             if (err) {
                 console.error(err.message);
                 res.send('Error saving data.');
             } else {
-                res.redirect('/getall'); // Redirect to the display page after submission
+                res.redirect('/'); // Redirect back to the form after submission
             }
         }
     );
 });
 
-// Serve the getall page
-app.get('/getall', (req, res) => {
-    db.all(`SELECT * FROM briefs`, [], (err, rows) => {
-        if (err) {
-            console.error(err.message);
-            res.send('Error retrieving data.');
-        } else {
-            let html = `
-                <html>
-                <head>
-                    <title>All Submissions</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; margin: 20px; }
-                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-                        th { background-color: #f2f2f2; }
-                    </style>
-                </head>
-                <body>
-                    <h1>All Submissions</h1>
-                    <table>
-                        <tr>
-                            <th>ID</th>
-                            <th>Company Name</th>
-                            <th>Contact Person</th>
-                            <th>Position</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Project Name</th>
-                            <th>Project Type</th>
-                            <th>Project Goals</th>
-                        </tr>`;
-            
-            // Add a table row for each submission
-            rows.forEach((row) => {
-                html += `
-                    <tr>
-                        <td>${row.id}</td>
-                        <td>${row.company_name}</td>
-                        <td>${row.contact_person}</td>
-                        <td>${row.position}</td>
-                        <td>${row.phone}</td>
-                        <td>${row.email}</td>
-                        <td>${row.project_name}</td>
-                        <td>${row.project_type}</td>
-                        <td>${row.project_goals}</td>
-                    </tr>`;
-            });
+// Admin route with password check
+app.get('/admin', (req, res) => {
+    const password = req.query.password;
 
-            html += `
-                    </table>
-                    <br>
-                    <a href="/">Go back to the form</a>
-                </body>
-                </html>`;
-            
-            res.send(html);
-        }
-    });
+    if (password === ADMIN_PASS) {
+        // If password matches, display all submissions
+        db.all(`USE DATABASE chinook.sqlite;
+            SELECT * FROM briefs`, [], (err, rows) => {
+            if (err) {
+                console.error(err.message);
+                res.send('Error retrieving data.');
+            } else {
+                let html = `
+                    <html>
+                    <head>
+                        <title>Admin - All Submissions</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>All Submissions</h1>
+                        <table>
+                            <tr>
+                                <th>ID</th>
+                                <th>Company Name</th>
+                                <th>Contact Person</th>
+                                <th>Position</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Project Name</th>
+                                <th>Project Type</th>
+                                <th>Project Goals</th>
+                                <th>Audience Characteristics</th>
+                                <th>Audience Needs</th>
+                                <th>Competitors</th>
+                                <th>Differentiators</th>
+                                <th>Advantages</th>
+                                <th>Budget</th>
+                                <th>Budget Constraints</th>
+                                <th>Timeline</th>
+                                <th>Milestones</th>
+                            </tr>`;
+                
+                // Add a table row for each submission
+                rows.forEach((row) => {
+                    html += `
+                        <tr>
+                            <td>${row.id}</td>
+                            <td>${row.company_name}</td>
+                            <td>${row.contact_person}</td>
+                            <td>${row.position}</td>
+                            <td>${row.phone}</td>
+                            <td>${row.email}</td>
+                            <td>${row.project_name}</td>
+                            <td>${row.project_type}</td>
+                            <td>${row.project_goals}</td>
+                            <td>${row.audience_characteristics}</td>
+                            <td>${row.audience_needs}</td>
+                            <td>${row.competitors}</td>
+                            <td>${row.differentiators}</td>
+                            <td>${row.advantages}</td>
+                            <td>${row.budget}</td>
+                            <td>${row.budget_constraints}</td>
+                            <td>${row.project_timeline}</td>
+                            <td>${row.milestones}</td>
+                        </tr>`;
+                });
+
+                html += `
+                        </table>
+                        <br>
+                        <a href="/">Go back to the form</a>
+                    </body>
+                    </html>`;
+                
+                res.send(html);
+            }
+        });
+    } else {
+        // If password is incorrect, show error
+        res.send('<h1>Access Denied: Incorrect password</h1>');
+    }
 });
 
 // Start the server
