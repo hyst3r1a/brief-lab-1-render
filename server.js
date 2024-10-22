@@ -11,7 +11,7 @@ const ADMIN_PASS = process.env.ADMIN_PASS || 'defaultpassword';
 const DB_CONN = process.env.DB_CONN;
 
 // Database setup
-const db = new Database('sqlitecloud://csfl31qznz.sqlite.cloud:8860?apikey=5ktCyiEAPZB59W7eyUNuliItUEP3hOmLpl2IpejdhXM', err => {
+const db = new Database(DB_CONN, err => {
     if (err) {
         console.error('Error opening database', err.message);
     } else {
