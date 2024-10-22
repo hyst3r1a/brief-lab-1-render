@@ -10,6 +10,21 @@ const { Database } = require('@sqlitecloud/drivers');
 const ADMIN_PASS = process.env.ADMIN_PASS || 'defaultpassword';
 const DB_CONN = process.env.DB_CONN;
 
+// Function to escape HTML special characters to prevent XSS
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>"']/g, (match) => {
+        switch (match) {
+            case '&': return '&amp;';
+            case '<': return '&lt;';
+            case '>': return '&gt;';
+            case '"': return '&quot;';
+            case "'": return '&#039;';
+            default: return match;
+        }
+    });
+}
+
 // Database setup
 const db = new Database(DB_CONN, err => {
     if (err) {
@@ -45,7 +60,7 @@ app.use(express.static(__dirname)); // Serve static files
 
 // Serve the form page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'index2.html'));
 });
 
 // Handle form submissions
@@ -138,28 +153,28 @@ app.get('/admin', (req, res) => {
                                 <th>Milestones</th>
                             </tr>`;
                 
-                // Add a table row for each submission
+                // Add a table row for each submission, escaping all dynamic content
                 rows.forEach((row) => {
                     html += `
                         <tr>
-                            <td>${row.id}</td>
-                            <td>${row.company_name}</td>
-                            <td>${row.contact_person}</td>
-                            <td>${row.position}</td>
-                            <td>${row.phone}</td>
-                            <td>${row.email}</td>
-                            <td>${row.project_name}</td>
-                            <td>${row.project_type}</td>
-                            <td>${row.project_goals}</td>
-                            <td>${row.audience_characteristics}</td>
-                            <td>${row.audience_needs}</td>
-                            <td>${row.competitors}</td>
-                            <td>${row.differentiators}</td>
-                            <td>${row.advantages}</td>
-                            <td>${row.budget}</td>
-                            <td>${row.budget_constraints}</td>
-                            <td>${row.project_timeline}</td>
-                            <td>${row.milestones}</td>
+                            <td>${escapeHtml(row.id.toString())}</td>
+                            <td>${escapeHtml(row.company_name)}</td>
+                            <td>${escapeHtml(row.contact_person)}</td>
+                            <td>${escapeHtml(row.position)}</td>
+                            <td>${escapeHtml(row.phone)}</td>
+                            <td>${escapeHtml(row.email)}</td>
+                            <td>${escapeHtml(row.project_name)}</td>
+                            <td>${escapeHtml(row.project_type)}</td>
+                            <td>${escapeHtml(row.project_goals)}</td>
+                            <td>${escapeHtml(row.audience_characteristics)}</td>
+                            <td>${escapeHtml(row.audience_needs)}</td>
+                            <td>${escapeHtml(row.competitors)}</td>
+                            <td>${escapeHtml(row.differentiators)}</td>
+                            <td>${escapeHtml(row.advantages)}</td>
+                            <td>${escapeHtml(row.budget)}</td>
+                            <td>${escapeHtml(row.budget_constraints)}</td>
+                            <td>${escapeHtml(row.project_timeline)}</td>
+                            <td>${escapeHtml(row.milestones)}</td>
                         </tr>`;
                 });
 
